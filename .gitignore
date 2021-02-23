@@ -1,0 +1,6 @@
+/.idea/
+/.links/
+/target/
+*.iml
+.graphqlconfig
+schema.docs.graphql
