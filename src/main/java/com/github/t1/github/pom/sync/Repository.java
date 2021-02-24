@@ -40,20 +40,9 @@ class Repository {
     String url;
     String description;
     LicenseInfo licenseInfo;
-    Collaborators collaborators;
 
     static class LicenseInfo {
         String name;
         String url;
-    }
-
-    static class Collaborators {
-        List<Collaborator> nodes;
-        int totalCount;
-    }
-
-    static class Collaborator {
-        String login;
-        String name;
     }
 }

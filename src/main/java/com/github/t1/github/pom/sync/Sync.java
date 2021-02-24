@@ -55,7 +55,6 @@ public class Sync implements Runnable {
         applyScm();
         applyLicense();
         applyDistributionManagement();
-        applyDevelopers();
 
         applyPlugins();
 
@@ -113,18 +112,6 @@ public class Sync implements Runnable {
         repository.getOrCreateElement("url").setText("https://oss.sonatype.org/service/local/staging/deploy/maven2/");
     }
 
-    private void applyDevelopers() {
-        if (repository.collaborators == null || repository.collaborators.totalCount == 0) return;
-        var developers = pom.getOrCreateElement("developers", furtherDown);
-        for (var collaborator : repository.collaborators.nodes) {
-            var found = developers.find("developer/id[text()='" + collaborator.login + "']");
-            if (found.isEmpty()) {
-                var developer = developers.addElement("developer");
-                developer.addElement("id").setText(collaborator.login);
-                developer.getOrCreateElement("name").setText(collaborator.name);
-            }
-        }
-    }
 
     private void applyPlugins() {
         applySourcePlugin();
