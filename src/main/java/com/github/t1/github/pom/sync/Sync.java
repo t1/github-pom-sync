@@ -38,7 +38,7 @@ public class Sync implements Runnable {
     }
 
     private boolean hasPlugin(String artifactId) {
-        var found = pom.find("build/plugins/plugin/artifactId[text()='" + artifactId + "']");
+        var found = pom.find("//plugins/plugin/artifactId[text()='" + artifactId + "']");
         return !found.isEmpty();
     }
 
@@ -175,7 +175,7 @@ public class Sync implements Runnable {
 
         var configuration = plugin.getOrCreateElement("configuration");
         configuration.getOrCreateElement("autoVersionSubmodules").setText("true");
-        configuration.getOrCreateElement("tagNameFormat").setText("@{project.version}");
+        configuration.getOrCreateElement("tagNameFormat").setText("v@{project.version}");
         configuration.getOrCreateElement("useReleaseProfile").setText("false");
         configuration.getOrCreateElement("releaseProfiles").setText("release");
     }
