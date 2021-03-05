@@ -15,10 +15,11 @@ class Repository {
         .build(GitHubApi.class);
 
     public static Repository fetch(String origin) {
-        var matcher = Pattern.compile("https://github.com/(?<owner>.+)/(?<name>.+)(\\.git)?").matcher(origin);
+        var matcher = Pattern.compile("https://github.com/(?<owner>.+)/(?<name>.+)").matcher(origin);
         Check.check(matcher.matches(), "not a valid github remote origin: '" + origin + "'");
         var owner = matcher.group("owner");
         var name = matcher.group("name");
+        if (name.endsWith(".git")) name = name.substring(0, name.length() - 4);
 
         return Repository.fetch(owner, name);
     }
