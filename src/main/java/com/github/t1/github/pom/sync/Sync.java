@@ -69,7 +69,7 @@ public class Sync implements Runnable {
             .find("repository").stream()
             .filter(repository -> "jcenter".equals(repository.getOptionalElement("id").map(XmlElement::getText).orElse(null)))
             .forEach(XmlElement::remove);
-        if (!repositories.get().hasChildElement("repository"))
+        if (!repositories.get().elements().isEmpty())
             repositories.get().remove();
     }
 
