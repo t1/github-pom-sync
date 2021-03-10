@@ -50,8 +50,9 @@ public class Sync implements Runnable {
     private void apply() {
         removeJCenter();
 
-        applyUrl();
+        applyName();
         applyDescription();
+        applyUrl();
         applyScm();
         applyLicense();
         applyDistributionManagement();
@@ -73,15 +74,20 @@ public class Sync implements Runnable {
             repositories.get().remove();
     }
 
-    private void applyUrl() {
-        if (repository.url == null) return;
-        pom.getOrCreateElement("url", furtherUp).setText(repository.url);
+    private void applyName() {
+        if (pom.hasChildElement("name")) return;
+        pom.getOrCreateElement("name", furtherUp).setText(pom.getOptionalElement("artifactId").orElseThrow().getText());
     }
 
     private void applyDescription() {
-        if (repository.description != null)
-            pom.getOrCreateElement("description", furtherUp)
-                .setText(repository.description);
+        if (repository.description == null) return;
+        pom.getOrCreateElement("description", furtherUp)
+            .setText(repository.description);
+    }
+
+    private void applyUrl() {
+        if (repository.url == null) return;
+        pom.getOrCreateElement("url", furtherUp).setText(repository.url);
     }
 
     private void applyScm() {
