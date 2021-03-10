@@ -75,7 +75,7 @@ public class Sync implements Runnable {
     }
 
     private void applyName() {
-        if (pom.hasChildElement("name")) return;
+        if (pom.getOptionalElement("name").isPresent()) return;
         pom.getOrCreateElement("name", furtherUp).setText(pom.getOptionalElement("artifactId").orElseThrow().getText());
     }
 
