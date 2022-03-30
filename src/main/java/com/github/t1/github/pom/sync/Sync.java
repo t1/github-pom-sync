@@ -210,7 +210,7 @@ public class Sync implements Runnable {
         var plugin = plugins.addElement("plugin");
         plugin.addComment("but don't run gpg everywhere, esp. not in github actions");
         plugin.getOrCreateElement("artifactId").setText("maven-gpg-plugin");
-        plugin.getOrCreateElement("version").setText("1.6");
+        plugin.getOrCreateElement("version").setText("3.0.1");
 
         var executions = plugin.getOrCreateElement("executions");
         var execution = executions.getOrCreateElement("execution");

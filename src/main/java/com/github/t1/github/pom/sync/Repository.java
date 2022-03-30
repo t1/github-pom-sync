@@ -1,7 +1,7 @@
 package com.github.t1.github.pom.sync;
 
 import io.smallrye.graphql.client.typesafe.api.AuthorizationHeader;
-import io.smallrye.graphql.client.typesafe.api.GraphQlClientBuilder;
+import io.smallrye.graphql.client.typesafe.api.TypesafeGraphQLClientBuilder;
 import org.eclipse.microprofile.graphql.NonNull;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import static io.smallrye.graphql.client.typesafe.api.AuthorizationHeader.Type.BEARER;
 
 class Repository {
-    private static final GitHubApi gitHubApi = GraphQlClientBuilder.newBuilder()
+    private static final GitHubApi gitHubApi = TypesafeGraphQLClientBuilder.newBuilder()
         .endpoint("https://api.github.com/graphql")
         .build(GitHubApi.class);
 
