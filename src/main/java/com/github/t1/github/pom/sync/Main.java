@@ -7,5 +7,6 @@ public class Main {
             System.exit(1);
         };
         new Sync().run();
+        System.exit(0);
     }
 }
