@@ -4,3 +4,5 @@
 *.iml
 .graphqlconfig
 schema.docs.graphql
+schema.graphql
+/src/test/graphql.config.yml

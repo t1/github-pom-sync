@@ -1,6 +1,6 @@
 package com.github.t1.github.pom.sync;
 
-public class Main {
+public class RunSync {
     public static void main(String... args) {
         Check.fail = message -> {
             System.err.println(message);

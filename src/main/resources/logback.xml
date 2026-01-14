@@ -5,8 +5,9 @@
         </encoder>
     </appender>
 
-    <root level="debug">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
-    <logger name="org.jboss.resteasy.resteasy_jaxrs.i18n" level="INFO"/>
+    <logger name="com.github.t1" level="DEBUG"/>
+    <logger name="io.smallrye.graphql.client" level="TRACE"/>
 </configuration>

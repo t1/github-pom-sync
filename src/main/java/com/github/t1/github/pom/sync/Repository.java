@@ -7,16 +7,17 @@ import org.eclipse.microprofile.graphql.NonNull;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.github.t1.github.pom.sync.Check.check;
 import static io.smallrye.graphql.client.typesafe.api.AuthorizationHeader.Type.BEARER;
 
 class Repository {
     private static final GitHubApi gitHubApi = TypesafeGraphQLClientBuilder.newBuilder()
-        .endpoint("https://api.github.com/graphql")
-        .build(GitHubApi.class);
+            .endpoint("https://api.github.com/graphql")
+            .build(GitHubApi.class);
 
     public static Repository fetch(String origin) {
         var matcher = Pattern.compile("https://github.com/(?<owner>.+)/(?<name>.+)").matcher(origin);
-        Check.check(matcher.matches(), "not a valid github remote origin: '" + origin + "'");
+        check(matcher.matches(), "not a valid github remote origin: '" + origin + "'");
         var owner = matcher.group("owner");
         var name = matcher.group("name");
         if (name.endsWith(".git")) name = name.substring(0, name.length() - 4);
