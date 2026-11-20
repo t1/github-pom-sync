@@ -55,7 +55,7 @@ public class Sync implements Runnable {
         applyUrl();
         applyScm();
         applyLicense();
-        applyDistributionManagement();
+        removeDistributionManagement();
         applyDevelopers();
 
         applyPlugins();
@@ -102,21 +102,17 @@ public class Sync implements Runnable {
         var licenses = pom.getOrCreateElement("licenses", furtherDown);
         var license = licenses.getOrCreateElement("license");
         license.getOrCreateElement("name").setText(repository.licenseInfo.name);
-        license.getOrCreateElement("url").setText(repository.licenseInfo.url);
+        license.getOrCreateElement("url").setText(https(repository.licenseInfo.url));
         if (!license.hasChildElement("distribution"))
             license.getOrCreateElement("distribution").setText("repo");
     }
 
-    private void applyDistributionManagement() {
-        var distributionManagement = pom.getOrCreateElement("distributionManagement", furtherDown);
+    private static String https(String url) {
+        return url.startsWith("http://") ? "https://" + url.substring("http://".length()) : url;
+    }
 
-        var snapshotRepository = distributionManagement.getOrCreateElement("snapshotRepository");
-        snapshotRepository.getOrCreateElement("id").setText("ossrh");
-        snapshotRepository.getOrCreateElement("url").setText("https://oss.sonatype.org/content/repositories/snapshots");
-
-        var repository = distributionManagement.getOrCreateElement("repository");
-        repository.getOrCreateElement("id").setText("ossrh");
-        repository.getOrCreateElement("url").setText("https://oss.sonatype.org/service/local/staging/deploy/maven2/");
+    private void removeDistributionManagement() {
+        pom.getOptionalElement("distributionManagement").ifPresent(XmlElement::remove);
     }
 
     private void applyDevelopers() {
@@ -136,7 +132,8 @@ public class Sync implements Runnable {
         applySourcePlugin();
         applyJavaDocPlugin();
         applyReleasePlugin();
-        applyNexusStagingPlugin();
+        removeNexusStagingPlugin();
+        applyCentralPublishingPlugin();
     }
 
     private void applySourcePlugin() {
@@ -186,17 +183,26 @@ public class Sync implements Runnable {
         configuration.getOrCreateElement("releaseProfiles").setText("release");
     }
 
-    private void applyNexusStagingPlugin() {
-        if (hasPlugin("nexus-staging-maven-plugin")) return;
+    private void removeNexusStagingPlugin() {
+        removePlugin("nexus-staging-maven-plugin");
+    }
+
+    private void removePlugin(String artifactId) {
+        pom.find("//plugins/plugin[artifactId='" + artifactId + "']").forEach(XmlElement::remove);
+    }
+
+    private void applyCentralPublishingPlugin() {
+        if (hasPlugin("central-publishing-maven-plugin")) return;
         var plugin = plugins().addElement("plugin");
-        plugin.getOrCreateElement("groupId").setText("org.sonatype.plugins");
-        plugin.getOrCreateElement("artifactId").setText("nexus-staging-maven-plugin");
-        plugin.getOrCreateElement("version").setText("1.6.8");
+        plugin.getOrCreateElement("groupId").setText("org.sonatype.central");
+        plugin.getOrCreateElement("artifactId").setText("central-publishing-maven-plugin");
+        plugin.getOrCreateElement("version").setText("0.12.0");
+        plugin.getOrCreateElement("extensions").setText("true");
 
         var configuration = plugin.getOrCreateElement("configuration");
-        configuration.getOrCreateElement("serverId").setText("ossrh");
-        configuration.getOrCreateElement("nexusUrl").setText("https://oss.sonatype.org/");
-        configuration.getOrCreateElement("autoReleaseAfterClose").setText("true");
+        configuration.getOrCreateElement("publishingServerId").setText("central");
+        configuration.getOrCreateElement("autoPublish").setText("true");
+        configuration.getOrCreateElement("waitUntil").setText("published");
     }
 
     private void applyReleaseProfiles() {

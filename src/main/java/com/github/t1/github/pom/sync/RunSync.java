@@ -1,7 +1,7 @@
 package com.github.t1.github.pom.sync;
 
 public class RunSync {
-    public static void main(String... args) {
+    static void main() {
         Check.fail = message -> {
             System.err.println(message);
             System.exit(1);
