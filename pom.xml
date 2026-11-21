@@ -50,7 +50,7 @@
         <dependency>
             <groupId>com.github.t1</groupId>
             <artifactId>xml</artifactId>
-            <version>0.0.15</version>
+            <version>0.0.16</version>
         </dependency>
     </dependencies>
 </project>
