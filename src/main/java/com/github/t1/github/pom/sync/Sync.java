@@ -38,12 +38,12 @@ public class Sync implements Runnable {
     }
 
     private boolean hasPlugin(String artifactId) {
-        var found = pom.find("//plugins/plugin/artifactId[text()='" + artifactId + "']");
+        var found = pom.find("//*[local-name()='plugin'][*[local-name()='artifactId'][text()='" + artifactId + "']]");
         return !found.isEmpty();
     }
 
     private boolean hasProfile(@SuppressWarnings("SameParameterValue") String profileId) {
-        var found = pom.find("profiles/profile/id[text()='" + profileId + "']");
+        var found = pom.find("*[local-name()='profiles']/*[local-name()='profile']/*[local-name()='id'][text()='" + profileId + "']");
         return !found.isEmpty();
     }
 
@@ -67,7 +67,7 @@ public class Sync implements Runnable {
         var repositories = pom.getOptionalElement("repositories");
         if (repositories.isEmpty()) return;
         repositories.get()
-            .find("repository").stream()
+            .find("*[local-name()='repository']").stream()
             .filter(repository -> "jcenter".equals(repository.getOptionalElement("id").map(XmlElement::getText).orElse(null)))
             .forEach(XmlElement::remove);
         if (!repositories.get().elements().isEmpty())
@@ -108,6 +108,7 @@ public class Sync implements Runnable {
     }
 
     private static String https(String url) {
+        //noinspection HttpUrlsUsage
         return url.startsWith("http://") ? "https://" + url.substring("http://".length()) : url;
     }
 
@@ -119,7 +120,7 @@ public class Sync implements Runnable {
         if (repository.collaborators == null || repository.collaborators.totalCount == 0) return;
         var developers = pom.getOrCreateElement("developers", furtherDown);
         for (var collaborator : repository.collaborators.nodes) {
-            var found = developers.find("developer/id[text()='" + collaborator.login + "']");
+            var found = developers.find("*[local-name()='developer']/*[local-name()='id'][text()='" + collaborator.login + "']");
             if (found.isEmpty()) {
                 var developer = developers.addElement("developer");
                 developer.addElement("id").setText(collaborator.login);
@@ -188,7 +189,7 @@ public class Sync implements Runnable {
     }
 
     private void removePlugin(String artifactId) {
-        pom.find("//plugins/plugin[artifactId='" + artifactId + "']").forEach(XmlElement::remove);
+        pom.find("//*[local-name()='plugin'][*[local-name()='artifactId']='" + artifactId + "']").forEach(XmlElement::remove);
     }
 
     private void applyCentralPublishingPlugin() {
